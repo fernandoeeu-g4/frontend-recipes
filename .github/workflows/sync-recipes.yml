@@ -30,7 +30,6 @@ jobs:
         run: |
           git config --global user.email "fernando.avcouto@gmail.com"
           git config --global user.name "Fernando Couto"
-          git rm --cached src/data/recipes.ts # Remove do cache
           git add src/data/recipes.ts
           git commit -m "Sync recipes.ts from external repo"
           git push origin HEAD:${GITHUB_REF}
