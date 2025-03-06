@@ -5,7 +5,23 @@ import { recipes } from "./data/recipes";
 import { RecipeCard } from "./components/RecipeCard";
 import { RecipeDetail } from "./components/RecipeDetail";
 import { categoryLabels } from "./utils/categories";
-import { motion } from "motion/react";
+import { Monitoring } from "react-scan/monitoring";
+
+function Container() {
+  const pathname = window.location.pathname;
+  return (
+    <>
+      <Monitoring
+        apiKey="Ur3f8KiqJH28d6oFzPpyVZ_eoLGHiojx" // Safe to expose publically
+        url="https://monitoring.react-scan.com/api/v1/ingest"
+        commit={import.meta.env.REACT_APP_VERCEL_GIT_COMMIT_SHA} // optional but recommended
+        branch={import.meta.env.REACT_APP_VERCEL_GIT_COMMIT_REF} // optional but recommended
+        path={pathname}
+      />
+      <App />
+    </>
+  );
+}
 
 function App() {
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
@@ -111,4 +127,4 @@ function App() {
   );
 }
 
-export default App;
+export default Container;
