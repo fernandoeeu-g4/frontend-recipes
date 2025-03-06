@@ -37,4 +37,4 @@ jobs:
           git config --global user.name "Fernando Couto"
           git add src/data/recipes.ts
           git commit -m "Sync recipes.ts from external repo" || echo "No changes to commit"
-          git push https://$GITHUB_TOKEN@github.com/fernandoeeu-g4/frontend-recipes.git HEAD:${GITHUB_REF}
+          git push origin main
