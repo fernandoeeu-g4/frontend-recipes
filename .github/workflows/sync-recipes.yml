@@ -30,9 +30,11 @@ jobs:
         run: rm -rf external-repo
 
       - name: Commit and push changes
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
           git config --global user.email "fernando.avcouto@gmail.com"
           git config --global user.name "Fernando Couto"
           git add src/data/recipes.ts
           git commit -m "Sync recipes.ts from external repo" || echo "No changes to commit"
-          git push origin HEAD:${GITHUB_REF}
+          git push https://$GITHUB_TOKEN@github.com/fernandoeeu-g4/frontend-recipes.git HEAD:${GITHUB_REF}
