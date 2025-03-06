@@ -16,15 +16,13 @@ jobs:
       - name: Clone external repository
         run: |
           git clone https://github.com/fernandoeeu-g4/recipes.git external-repo
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }} # Usar o PAT para clonar o repositório externo
 
       - name: Copy recipes.ts file
         run: |
           cp external-repo/recipes.ts src/data/recipes.ts
           ls -l src/data/recipes.ts # Verifica se o arquivo foi copiado corretamente
-
-      - name: Check for changes
-        run: |
-          git diff --exit-code || echo "Changes detected"
 
       - name: Remove external-repo directory
         run: rm -rf external-repo
@@ -36,7 +34,7 @@ jobs:
 
       - name: Commit and push changes
         env:
-          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }} # Certifique-se de que o token tem permissões
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Usar o token padrão do GitHub para o push
         run: |
           git add src/data/recipes.ts
           if ! git diff --cached --exit-code; then
