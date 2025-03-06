@@ -3,7 +3,9 @@ name: Sync Recipes File from External Repo
 on:
   push:
     branches:
-      - main # ou a branch que você deseja monitorar
+      - main
+  schedule:
+    - cron: "0 0 * * *" # Executa diariamente à meia-noite UTC
 
 jobs:
   sync:
@@ -13,33 +15,25 @@ jobs:
       - name: Checkout current repo
         uses: actions/checkout@v3
 
-      - name: Clone external repository
+      - name: Fetch recipes.ts from external repo
         run: |
-          git clone https://github.com/fernandoeeu-g4/recipes.git external-repo
-        env:
-          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }} # Usar o PAT para clonar o repositório externo
+          curl -H "Authorization: token ${{ secrets.PAT_TOKEN }}" \
+               -H "Accept: application/vnd.github.v3.raw" \
+               -o src/data/recipes.ts \
+               https://api.github.com/repos/fernandoeeu-g4/recipes/contents/recipes.ts
 
-      - name: Copy recipes.ts file
-        run: |
-          cp external-repo/recipes.ts src/data/recipes.ts
-          ls -l src/data/recipes.ts # Verifica se o arquivo foi copiado corretamente
-
-      - name: Remove external-repo directory
-        run: rm -rf external-repo
-
-      - name: Configure Git
-        run: |
-          git config --global user.email "fernando.avcouto@gmail.com"
-          git config --global user.name "Fernando Couto"
-
-      - name: Commit and push changes
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Usar o token padrão do GitHub para o push
+      - name: Check for changes
+        id: git-check
         run: |
           git add src/data/recipes.ts
-          if ! git diff --cached --exit-code; then
-            git commit -m "Sync recipes.ts from external repo"
-            git push origin main
-          else
-            echo "No changes to commit"
-          fi
+          git diff --staged --quiet || echo "changed=true" >> $GITHUB_OUTPUT
+
+      - name: Commit and push if changed
+        if: steps.git-check.outputs.changed == 'true'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git commit -m "Sync recipes.ts from external repo"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
