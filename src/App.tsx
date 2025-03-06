@@ -1,11 +1,11 @@
-import React, { useState } from "react";
-import { Search, BookOpen } from "lucide-react";
-import { Recipe, RecipeCategory } from "./types/Recipe";
-import { recipes } from "./data/recipes";
+import { BookOpen, Search } from "lucide-react";
+import { useState } from "react";
+import { Monitoring } from "react-scan/monitoring";
 import { RecipeCard } from "./components/RecipeCard";
 import { RecipeDetail } from "./components/RecipeDetail";
+import { recipes } from "./data/recipes";
+import { Recipe, RecipeCategory } from "./types/Recipe";
 import { categoryLabels } from "./utils/categories";
-import { Monitoring } from "react-scan/monitoring";
 
 function Container() {
   const pathname = window.location.pathname;
