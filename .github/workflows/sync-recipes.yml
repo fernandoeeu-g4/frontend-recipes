@@ -1,0 +1,31 @@
+name: Sync Recipes File from External Repo
+
+on:
+  push:
+    branches:
+      - main # ou a branch que você deseja monitorar
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout current repo
+        uses: actions/checkout@v3
+
+      - name: Clone external repository
+        run: |
+          git clone https://github.com/fernandoeeu-g4/recipes.git external-repo
+
+      - name: Copy recipes.ts file
+        run: |
+          mkdir -p src/data # Cria a pasta de destino no seu repo
+          cp external-repo/recipes.ts src/data/recipes.ts
+
+      - name: Commit and push changes
+        run: |
+          git config --global user.email "fernando.avcouto@gmail.com"
+          git config --global user.name "Fernando Couto"
+          git add src/data/recipes.ts
+          git commit -m "Sync recipes.ts from external repo"
+          git push origin HEAD:${GITHUB_REF}
