@@ -22,6 +22,9 @@ jobs:
           mkdir -p src/data # Cria a pasta de destino no seu repo
           cp external-repo/recipes.ts src/data/recipes.ts
 
+      - name: Remove external-repo directory
+        run: rm -rf external-repo
+
       - name: Commit and push changes
         run: |
           git config --global user.email "fernando.avcouto@gmail.com"
